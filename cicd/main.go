@@ -33,6 +33,13 @@ type PullRequestEvent struct {
 
 func main() {
 
+	file, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.SetOutput(file)
+
 	// .env file : loading secrets
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error in loading env file")
