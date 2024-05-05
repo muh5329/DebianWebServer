@@ -4,19 +4,52 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
-	"io/ioutil"
+	"encoding/json"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
+
+	"github.com/joho/godotenv"
 )
 
-var secret = []byte("your-github-webhook-secret")
+type PullRequestEvent struct {
+	Action      string `json:"action"`
+	PullRequest struct {
+		Number int  `json:"number"`
+		Merged bool `json:"merged"`
+		Base   struct {
+			Ref string `json:"ref"`
+		} `json:"base"`
+	} `json:"pull_request"`
+	Repository struct {
+		Name  string `json:"name"`
+		Owner struct {
+			Login string `json:"login"`
+		} `json:"owner"`
+	} `json:"repository"`
+}
 
 func main() {
+
+	// .env file : loading secrets
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error in loading env file")
+	}
+
+	ghSecret := []byte(os.Getenv("GH_WEBHOOK_SECRET"))
+
 	http.HandleFunc("/webhook", func(w http.ResponseWriter, r *http.Request) {
+
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
 		// Verify the request is coming from GitHub
 		signature := r.Header.Get("X-Hub-Signature")
-		payload, err := ioutil.ReadAll(r.Body)
+		payload, err := io.ReadAll(r.Body)
 		if err != nil {
 			log.Println("Error reading request body:", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -24,21 +57,32 @@ func main() {
 		}
 		defer r.Body.Close()
 
-		if !verifySignature(signature, payload) {
+		if !verifySignature(signature, payload, ghSecret) {
 			log.Println("Signature verification failed")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
-		// Parse the webhook payload
-		// Check if the event is a merge to the main branch
-
-		// If the event is a merge to the main branch, trigger the build process
-		err = triggerBuild()
-		if err != nil {
-			log.Println("Error triggering build process:", err)
-			w.WriteHeader(http.StatusInternalServerError)
+		var event PullRequestEvent
+		if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
+			log.Println("Failed to decode webhook payload: \n", err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
+		}
+
+		if event.Action != "closed" || !event.PullRequest.Merged {
+			// Ignore if the action is not "closed" or the pull request is not merged
+			return
+		}
+
+		if event.PullRequest.Base.Ref == "main" {
+			// If the event is a merge to the main branch, trigger the build process
+			err = triggerBuild()
+			if err != nil {
+				log.Println("Error triggering build process:", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -47,7 +91,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-func verifySignature(signature string, payload []byte) bool {
+func verifySignature(signature string, payload []byte, secret []byte) bool {
 	mac := hmac.New(sha1.New, secret)
 	mac.Write(payload)
 	expectedMAC := hex.EncodeToString(mac.Sum(nil))
@@ -57,6 +101,7 @@ func verifySignature(signature string, payload []byte) bool {
 
 func triggerBuild() error {
 	// Pull latest changes from GitHub
+	log.Println("Pulling from main")
 	cmd := exec.Command("git", "pull", "origin", "main")
 	err := cmd.Run()
 	if err != nil {
@@ -64,7 +109,8 @@ func triggerBuild() error {
 	}
 
 	// Build Next.js project as a production app
-	cmd = exec.Command("npm", "run", "build")
+	log.Println("Running pnpm build")
+	cmd = exec.Command("pnpm", "run", "build")
 	err = cmd.Run()
 	if err != nil {
 		return err
