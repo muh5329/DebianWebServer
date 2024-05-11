@@ -16,3 +16,6 @@
 
 ```
 
+
+
+docker compose up -d --no--deps  --scale server=2 --no-recreate server
