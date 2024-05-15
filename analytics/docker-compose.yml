@@ -7,7 +7,7 @@ services:
     depends_on:
       - swetrix-api
     ports:
-      - '80:80'
+      - '8082:80'
     environment:
       - API_URL=${SWETRIX_API_URL}
       - REACT_APP_AIAPI_URL=${SWETRIX_REACT_APP_AIAPI_URL}
@@ -21,7 +21,7 @@ services:
     restart: always
     container_name: swetrix-api
     ports:
-      - '8080:5005'
+      - '8081:5005'
     environment:
       - JWT_ACCESS_TOKEN_SECRET=${SWETRIX_JWT_ACCESS_TOKEN_SECRET}
       - JWT_REFRESH_TOKEN_SECRET=${SWETRIX_JWT_REFRESH_TOKEN_SECRET}
