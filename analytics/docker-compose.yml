@@ -1,0 +1,71 @@
+version: '3.9'
+services:
+  # This is the frontend, you can remove it if you want
+  swetrix:
+    image: swetrix/swetrix-fe:v2.1.0
+    restart: always
+    depends_on:
+      - swetrix-api
+    ports:
+      - '80:80'
+    environment:
+      - API_URL=${SWETRIX_API_URL}
+      - REACT_APP_AIAPI_URL=${SWETRIX_REACT_APP_AIAPI_URL}
+      - REACT_APP_SELFHOSTED=${SWETRIX_REACT_APP_SELFHOSTED}
+
+      
+
+  # This is the analytics API
+  swetrix-api:
+    image: swetrix/swetrix-api:v2.1.2
+    restart: always
+    container_name: swetrix-api
+    ports:
+      - '8080:5005'
+    environment:
+      - JWT_ACCESS_TOKEN_SECRET=${SWETRIX_JWT_ACCESS_TOKEN_SECRET}
+      - JWT_REFRESH_TOKEN_SECRET=${SWETRIX_JWT_REFRESH_TOKEN_SECRET}
+      - REDIS_HOST=${SWETRIX_REDIS_HOST}
+      - CLICKHOUSE_HOST=${SWETRIX_CLICKHOUSE_HOST}
+      - API_ORIGINS=${SWETRIX_API_ORIGINS}
+      - EMAIL=${SWETRIX_EMAIL}
+      - PASSWORD=${SWETRIX_PASWORD}
+    links:
+      - 'redis'
+      - 'clickhouse'
+    depends_on:
+      - 'redis'
+      - 'clickhouse'
+  redis:
+    image: redis:7.0.11-alpine
+    restart: always
+    environment:
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    # ports:
+    #   - 6379:6379
+  #   volumes:
+  #     - '/opt/redis-volume:/data'
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.4.2.11-alpine
+    container_name: clickhouse
+    environment:
+      - CLICKHOUSE_DATABASE=${CLICKHOUSE_DATABASE}
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PORT=${CLICKHOUSE_PORT}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    # ports:
+    #   - 8123:8123
+    restart: always
+    volumes:
+      - swetrix-events-data:/var/lib/clickhouse
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+volumes:
+  swetrix-events-data:
+    driver: local
+
+
