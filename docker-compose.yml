@@ -1,0 +1,2 @@
+include:
+  - analytics/docker-compose.yml # Analyitics server
