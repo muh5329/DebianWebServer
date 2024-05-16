@@ -2,19 +2,26 @@
 Debian web server utilities and program
 
 
-# Current Start Up Process ( Manual )
+# Setup
 
-Navigate to: 
-	ssh muh5329@192.XXX.XX.XXX
-Navigate to 
-	/var/www/demo
-Pull repo
-	git pull
-build static files
-	pnpm build
-stop existing node server
-	pm2 stop demo
-start new process of node with pm2
-	pm2 start pnpm --name demo -- start
-Delete old process
-	pm2 delete 0
+Folder structure should be the following :
+
+
+/services/
+.
+├── DebianWebServer
+│   ├── analytics
+│   │   └── docker-compose.yml
+│   ├── docker-compose.yml
+│   ├── README.md
+│   ├── webhook
+│   │   ├── main.go
+│   │   ├── README.md
+│   │  
+│   └── webserver_scripts
+│       └── build_and_deploy.sh
+└── webserver
+    └── Monkey-Factory
+        ├── Dockerfile
+
+

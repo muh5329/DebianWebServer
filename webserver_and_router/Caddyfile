@@ -1,0 +1,11 @@
+www.monkeyfactory.org {
+	redir https://monkeyfactory.org
+}
+
+monkeyfactory.org {
+	reverse_proxy * server:3000
+}
+
+analytics.monkeyfactory.org {
+	reverse_proxy plausible:8000
+}
