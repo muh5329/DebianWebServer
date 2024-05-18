@@ -6,6 +6,14 @@ monkeyfactory.org {
 	reverse_proxy * server:3000
 }
 
+spinningplanet.monkeyfactory.org {
+	reverse_proxy * spinning_planet:3000
+}
+
+wavecollapse.monkeyfactory.org {
+	reverse_proxy * wave_collapse:3000
+}
+
 analytics.monkeyfactory.org {
 	reverse_proxy plausible:8000
 }

@@ -7,6 +7,20 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
+
+  spinning_planet:
+    build:
+      context: /services/webserver/SpacePortfolio
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+
+  wave_collapse:
+    build:
+      context: /services/webserver/WaveCollapseEditor
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
  
   caddy:
     image: caddy:latest
