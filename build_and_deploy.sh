@@ -31,6 +31,9 @@ git pull
 
 
 cd /services/DebianWebServer
+git pull
+
+docker compose down
 docker compose up -d 
 
 
