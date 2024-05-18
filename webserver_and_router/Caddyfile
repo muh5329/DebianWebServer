@@ -15,5 +15,5 @@ wavecollapse.monkeyfactory.org {
 }
 
 analytics.monkeyfactory.org {
-	reverse_proxy plausible:8000
+	reverse_proxy swetrix:8082
 }
