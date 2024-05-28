@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   server:
+    restart: always
     build:
       context: /services/webserver/Monkey-Factory
       dockerfile: Dockerfile
@@ -9,6 +10,7 @@ services:
       - NODE_ENV=production
 
   spinning_planet:
+    restart: always
     build:
       context: /services/webserver/SpacePortfolio
       dockerfile: Dockerfile
@@ -16,6 +18,7 @@ services:
       - NODE_ENV=production
 
   wave_collapse:
+    restart: always
     build:
       context: /services/webserver/WaveCollapseEditor
       dockerfile: Dockerfile
@@ -24,6 +27,7 @@ services:
  
   caddy:
     image: caddy:latest
+    restart: always
     ports:
       - "80:80"
       - "443:443"
