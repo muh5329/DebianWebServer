@@ -4,6 +4,9 @@ services:
     restart: always
     ports:
       - "5432:5432"
+    networks:
+      - postgres-network
+    command: postgres -c listen_addresses='*'
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -13,3 +16,7 @@ services:
 
 volumes:
   pg-data:
+
+networks:
+  postgres-network:
+    driver: bridge
