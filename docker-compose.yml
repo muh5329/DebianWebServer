@@ -1,7 +1,6 @@
 include:
   - analytics/docker-compose.yml # Analyitics server
   - webserver_and_router/compose.yml
-  - db/docker-compose.yml
   
 version: '3'
 
