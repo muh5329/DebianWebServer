@@ -15,7 +15,7 @@ services:
     environment:
       - NODE_ENV=production
 
-   vertical_profile:
+  vertical_profile:
     restart: always
     build:
       context: /services/webserver/vertical_profile
@@ -30,7 +30,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
- 
+
   caddy:
     image: caddy:latest
     restart: always
