@@ -3,7 +3,7 @@ www.monkeyfactory.org {
 }
 
 monkeyfactory.org {
-	reverse_proxy * server:3000
+	reverse_proxy * vertical_profile:3000
 }
 
 spinningplanet.monkeyfactory.org {
@@ -12,6 +12,10 @@ spinningplanet.monkeyfactory.org {
 
 wavecollapse.monkeyfactory.org {
 	reverse_proxy * wave_collapse:3000
+}
+
+old.monkeyfactory.org {
+	reverse_proxy * server:3000
 }
 
 analytics.monkeyfactory.org {
