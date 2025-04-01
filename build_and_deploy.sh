@@ -5,6 +5,8 @@ cd /services/webserver/SpacePortfolio
 git pull
 cd /services/webserver/WaveCollapseEditor
 git pull
+cd /services/webserver/vertical_profile
+git pull
 
 # VERSION=$(git rev-parse HEAD)
 
