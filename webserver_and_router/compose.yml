@@ -15,6 +15,14 @@ services:
     environment:
       - NODE_ENV=production
 
+   vertical_profile:
+    restart: always
+    build:
+      context: /services/webserver/vertical_profile
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+
   wave_collapse:
     restart: always
     build:
