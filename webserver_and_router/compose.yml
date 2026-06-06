@@ -23,7 +23,7 @@ services:
   #   environment:
   #     - NODE_ENV=production
 
-  stack-profile:
+  stack_profile:
     restart: always
     build:
       context: /services/webserver/stack-profile
