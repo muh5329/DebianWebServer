@@ -3,7 +3,7 @@ www.monkeyfactory.org {
 }
 
 monkeyfactory.org {
-	reverse_proxy * vertical_profile:3000
+	reverse_proxy * stack_profile:3000
 }
 
 spinningplanet.monkeyfactory.org {
