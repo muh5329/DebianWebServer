@@ -15,10 +15,18 @@ services:
     environment:
       - NODE_ENV=production
 
-  vertical_profile:
+  # vertical_profile:
+  #   restart: always
+  #   build:
+  #     context: /services/webserver/vertical_profile
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - NODE_ENV=production
+
+  stack-profile:
     restart: always
     build:
-      context: /services/webserver/vertical_profile
+      context: /services/webserver/stack-profile
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
@@ -42,19 +50,19 @@ services:
       - caddy_data:/data
       - caddy_config:/config
 
-  postgress:
-    image: postgres:latest
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - pg-data:/var/lib/postgresql/data
+  # postgress:
+  #   image: postgres:latest
+  #   restart: always
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #   volumes:
+  #     - pg-data:/var/lib/postgresql/data
 
 volumes:
   caddy_data:
   caddy_config:
-  pg-data:
+  # pg-data:
